@@ -17,10 +17,10 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# ==================== GUARANTEED ROUND BUTTON CSS ====================
+# ==================== STYLISH FONT & BUTTON CSS ====================
 st.markdown("""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Yatra+One&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Rozha+One&family=Yatra+One&display=swap');
 
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
@@ -58,7 +58,7 @@ st.markdown("""
         border: 1px solid #FFE0B2;
     }
 
-    /* 1. NORMAL BUTTONS (Login, Register, Admin etc.) */
+    /* 1. NORMAL BUTTONS */
     button[kind="secondary"], button[kind="secondaryFormSubmit"], button[kind="primaryFormSubmit"] {
         background: linear-gradient(135deg, #FF8F00 0%, #FF6F00 100%) !important;
         color: white !important;
@@ -76,16 +76,12 @@ st.markdown("""
         transform: translateY(-2px) !important;
     }
     
-    /* 2. GUARANTEED GIANT ROUND "SHRI RADHA" BUTTON (PRIMARY TYPE) */
+    /* 2. GUARANTEED GIANT ROUND BUTTON WITH STYLISH BIG TEXT */
     button[kind="primary"] {
         background: radial-gradient(circle, #FFA000 0%, #FF6F00 70%, #E65100 100%) !important;
-        color: #FFFFFF !important;
-        width: 260px !important;
-        height: 260px !important;
+        width: 270px !important;
+        height: 270px !important;
         border-radius: 50% !important;
-        font-family: 'Yatra One', cursive, sans-serif !important;
-        font-size: 45px !important;
-        font-weight: bold !important;
         border: 8px solid #FFF3E0 !important;
         box-shadow: 0px 10px 30px rgba(255, 111, 0, 0.6), inset 0px 0px 15px rgba(255, 255, 255, 0.4) !important;
         margin: 15px auto !important;
@@ -95,12 +91,26 @@ st.markdown("""
         padding: 0 !important;
         transition: transform 0.1s ease !important;
     }
+    
+    /* --- YAHAN TEXT KO BADA AUR STYLISH KIYA GAYA HAI --- */
+    button[kind="primary"] p, button[kind="primary"] span, button[kind="primary"] div {
+        color: #FFFFFF !important;
+        font-family: 'Rozha One', 'Yatra One', serif, cursive !important;
+        font-size: 52px !important;
+        font-weight: 800 !important;
+        letter-spacing: 2px !important;
+        text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3) !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        line-height: 1.1 !important;
+    }
+
     button[kind="primary"]:hover {
-        transform: scale(1.04) !important;
+        transform: scale(1.03) !important;
         box-shadow: 0px 15px 40px rgba(255, 111, 0, 0.8) !important;
     }
 
-    /* Counter Display (Theek Button Ke Niche) */
+    /* Counter Display */
     .counter-display {
         text-align: center;
         font-size: 65px;
@@ -195,7 +205,6 @@ def admin_login_page():
         conn = sqlite3.connect("radha_counter_web.db")
         if conn.execute("SELECT * FROM users WHERE username=? AND dob=? AND role='admin'", (u, p)).fetchone():
             st.session_state.current_user = u
-            # Check if using default password, force reset
             if p == 'admin123':
                 navigate_to("admin_reset_password")
             else:
@@ -287,14 +296,14 @@ def counter_page():
     st.markdown(f"<div class='spiritual-title' style='font-size:32px;'>जय श्री कृष्ण, {st.session_state.current_user}!</div>", unsafe_allow_html=True)
     st.write("")
     
-    # 1. GUARANTEED GIANT ROUND BUTTON (Using type="primary")
+    # 1. GUARANTEED GIANT ROUND BUTTON WITH BIG STYLISH TEXT
     if st.button("श्री राधा", type="primary"):
         if st.session_state.count == 0: 
             st.session_state.start_time = get_ist_now()
         st.session_state.count += 1
         st.rerun()
         
-    # 2. COUNTER NUMBER (Theek Niche)
+    # 2. COUNTER NUMBER
     st.markdown(f"<div class='counter-display'>{st.session_state.count}</div>", unsafe_allow_html=True)
     
     # 3. LOGOUT & SAVE BUTTON
