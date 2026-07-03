@@ -3,7 +3,7 @@ import sqlite3
 from datetime import datetime, timezone, timedelta
 import pandas as pd
 
-# ==================== INDIAN TIMEZONE SETUP ====================
+# ==================== INDIAN TIMEZONE (IST) SETUP ====================
 IST = timezone(timedelta(hours=5, minutes=30))
 
 def get_ist_now():
@@ -17,7 +17,7 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
-# ==================== ADVANCED CSS ====================
+# ==================== GUARANTEED ROUND BUTTON CSS ====================
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&family=Yatra+One&display=swap');
@@ -34,7 +34,7 @@ st.markdown("""
     .spiritual-title {
         font-family: 'Yatra One', cursive;
         color: #FF6F00;
-        font-size: 45px;
+        font-size: 42px;
         text-align: center;
         text-shadow: 2px 2px 4px rgba(255, 111, 0, 0.2);
         margin-top: 10px;
@@ -43,69 +43,74 @@ st.markdown("""
     .subtitle {
         text-align: center;
         color: #8D6E63;
-        font-size: 16px;
+        font-size: 15px;
         font-weight: 600;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
 
     .form-container {
         max-width: 400px;
         margin: 0 auto;
         background: #FFFFFF;
-        padding: 30px;
+        padding: 25px;
         border-radius: 20px;
         box-shadow: 0px 10px 25px rgba(255, 111, 0, 0.1);
         border: 1px solid #FFE0B2;
     }
 
-    div[data-testid="stButton"] > button {
+    /* 1. NORMAL BUTTONS (Login, Register, Admin etc.) */
+    button[kind="secondary"], button[kind="secondaryFormSubmit"], button[kind="primaryFormSubmit"] {
         background: linear-gradient(135deg, #FF8F00 0%, #FF6F00 100%) !important;
         color: white !important;
-        border-radius: 10px !important;
+        border-radius: 12px !important;
         font-weight: 600 !important;
         font-size: 16px !important;
-        width: 100%;
+        width: 100% !important;
+        height: 48px !important;
         border: none !important;
-        padding: 10px !important;
         box-shadow: 0px 4px 10px rgba(255, 111, 0, 0.2) !important;
+        transition: all 0.2s ease !important;
     }
-    div[data-testid="stButton"] > button:hover {
+    button[kind="secondary"]:hover {
         background: linear-gradient(135deg, #FF6F00 0%, #E65100 100%) !important;
-        transform: translateY(-2px);
+        transform: translateY(-2px) !important;
     }
     
-    .round-btn div[data-testid="stButton"] > button {
+    /* 2. GUARANTEED GIANT ROUND "SHRI RADHA" BUTTON (PRIMARY TYPE) */
+    button[kind="primary"] {
         background: radial-gradient(circle, #FFA000 0%, #FF6F00 70%, #E65100 100%) !important;
         color: #FFFFFF !important;
-        width: 280px !important;
-        height: 280px !important;
+        width: 260px !important;
+        height: 260px !important;
         border-radius: 50% !important;
-        font-family: 'Yatra One', cursive !important;
-        font-size: 50px !important;
+        font-family: 'Yatra One', cursive, sans-serif !important;
+        font-size: 45px !important;
+        font-weight: bold !important;
         border: 8px solid #FFF3E0 !important;
-        box-shadow: 0px 10px 30px rgba(255, 111, 0, 0.5) !important;
-        margin: 0 auto !important;
-        display: block !important;
+        box-shadow: 0px 10px 30px rgba(255, 111, 0, 0.6), inset 0px 0px 15px rgba(255, 255, 255, 0.4) !important;
+        margin: 15px auto !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        padding: 0 !important;
         transition: transform 0.1s ease !important;
     }
-    .round-btn div[data-testid="stButton"] > button:hover {
-        transform: scale(1.02) !important;
-        box-shadow: 0px 15px 40px rgba(255, 111, 0, 0.7) !important;
+    button[kind="primary"]:hover {
+        transform: scale(1.04) !important;
+        box-shadow: 0px 15px 40px rgba(255, 111, 0, 0.8) !important;
     }
 
+    /* Counter Display (Theek Button Ke Niche) */
     .counter-display {
         text-align: center;
-        font-size: 60px;
+        font-size: 65px;
         font-weight: 800;
         color: #2C1810;
-        margin-top: 20px;
-        margin-bottom: 25px;
-    }
-    
-    .btn-red div[data-testid="stButton"] > button {
-        background: linear-gradient(135deg, #E53935 0%, #C62828 100%) !important;
+        margin-top: 10px;
+        margin-bottom: 20px;
     }
 
+    /* Custom Table/Grid Design */
     .custom-table {
         width: 100%;
         border-collapse: collapse;
@@ -190,7 +195,7 @@ def admin_login_page():
         conn = sqlite3.connect("radha_counter_web.db")
         if conn.execute("SELECT * FROM users WHERE username=? AND dob=? AND role='admin'", (u, p)).fetchone():
             st.session_state.current_user = u
-            # --- Check for default password to force reset ---
+            # Check if using default password, force reset
             if p == 'admin123':
                 navigate_to("admin_reset_password")
             else:
@@ -202,7 +207,6 @@ def admin_login_page():
     if st.button("← Back to Home"): navigate_to("home")
     st.markdown("</div>", unsafe_allow_html=True)
 
-# --- NEW: Admin Reset Password Page ---
 def admin_reset_password_page():
     st.markdown("<div class='spiritual-title'>Update Password</div>", unsafe_allow_html=True)
     st.markdown("<div class='subtitle'>Please change your default password to continue.</div>", unsafe_allow_html=True)
@@ -217,24 +221,18 @@ def admin_reset_password_page():
         if not new_pass or not confirm_pass:
             st.error("⚠️ Password fields cannot be empty!")
         elif new_pass == 'admin123':
-            st.error("⚠️ Please choose a different password than the default one!")
+            st.error("⚠️ Please choose a different password than default!")
         elif new_pass != confirm_pass:
             st.error("⚠️ Passwords do not match!")
         else:
             conn = sqlite3.connect("radha_counter_web.db")
             conn.execute("UPDATE users SET dob=? WHERE username=? AND role='admin'", (new_pass, st.session_state.current_user))
-            conn.commit()
-            conn.close()
+            conn.commit(); conn.close()
             st.success("✅ Password Updated Successfully!")
-            st.info("Redirecting to Admin Dashboard...")
             navigate_to("admin_dashboard")
             
     st.write("---")
-    st.markdown('<div class="btn-red">', unsafe_allow_html=True)
-    if st.button("🔴 Logout"):
-        st.session_state.current_user = None
-        navigate_to("home")
-    st.markdown('</div>', unsafe_allow_html=True)
+    if st.button("← Logout"): st.session_state.current_user = None; navigate_to("home")
     st.markdown("</div>", unsafe_allow_html=True)
 
 def user_login_page():
@@ -242,8 +240,8 @@ def user_login_page():
     st.write("")
     
     st.markdown("<div class='form-container'>", unsafe_allow_html=True)
-    u = st.text_input("Username (Name)", placeholder="Chirag")
-    p = st.text_input("Password (DOB)", type="password", placeholder="09022023")
+    u = st.text_input("Username (Name)", placeholder="Jaise: Chirag")
+    p = st.text_input("Password (DOB)", type="password", placeholder="Jaise: 09022023")
     st.write("")
     if st.button("LOGIN"):
         conn = sqlite3.connect("radha_counter_web.db")
@@ -286,24 +284,22 @@ def register_page():
     st.markdown("</div>", unsafe_allow_html=True)
 
 def counter_page():
-    st.markdown(f"<div class='spiritual-title' style='font-size:35px;'>जय श्री कृष्ण, {st.session_state.current_user}!</div>", unsafe_allow_html=True)
+    st.markdown(f"<div class='spiritual-title' style='font-size:32px;'>जय श्री कृष्ण, {st.session_state.current_user}!</div>", unsafe_allow_html=True)
     st.write("")
     
-    col1, col2, col3 = st.columns([1, 2, 1])
-    with col2:
-        st.markdown('<div class="round-btn">', unsafe_allow_html=True)
-        if st.button("श्री राधा"):
-            if st.session_state.count == 0: 
-                st.session_state.start_time = get_ist_now()
-            st.session_state.count += 1
-            st.rerun()
-        st.markdown('</div>', unsafe_allow_html=True)
+    # 1. GUARANTEED GIANT ROUND BUTTON (Using type="primary")
+    if st.button("श्री राधा", type="primary"):
+        if st.session_state.count == 0: 
+            st.session_state.start_time = get_ist_now()
+        st.session_state.count += 1
+        st.rerun()
         
+    # 2. COUNTER NUMBER (Theek Niche)
     st.markdown(f"<div class='counter-display'>{st.session_state.count}</div>", unsafe_allow_html=True)
     
-    col_btn1, col_btn2, col_btn3 = st.columns([1, 2, 1])
-    with col_btn2:
-        st.markdown('<div class="btn-red">', unsafe_allow_html=True)
+    # 3. LOGOUT & SAVE BUTTON
+    col1, col2, col3 = st.columns([1, 3, 1])
+    with col2:
         if st.button("🔴 LOGOUT & SAVE SESSION"):
             if st.session_state.count > 0:
                 end_time = get_ist_now()
@@ -316,7 +312,6 @@ def counter_page():
                 conn.commit(); conn.close()
             st.session_state.current_user = None; st.session_state.count = 0; st.session_state.start_time = None
             navigate_to("home")
-        st.markdown('</div>', unsafe_allow_html=True)
 
     st.write("---")
     st.markdown("<h3>📊 My Previous Reports</h3>", unsafe_allow_html=True)
@@ -369,9 +364,7 @@ def admin_dashboard():
     st.write("---")
     col1, col2, col3 = st.columns([1, 2, 1])
     with col2:
-        st.markdown('<div class="btn-red">', unsafe_allow_html=True)
         if st.button("🔴 Admin Logout"): st.session_state.current_user = None; navigate_to("home")
-        st.markdown('</div>', unsafe_allow_html=True)
 
 # ==================== ROUTER ====================
 if st.session_state.page == 'home': home_page()
