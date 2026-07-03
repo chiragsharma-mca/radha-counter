@@ -140,7 +140,7 @@ def setup_db():
     c.execute("SELECT * FROM users WHERE username = 'admin'")
     if not c.fetchone():
         c.execute("INSERT INTO users (username, gender, age, dob, role) VALUES (?, ?, ?, ?, ?)",
-                  ('admin', 'Male', 25, 'admin123', 'admin'))
+                  ('admin', 'Male', 25, 'admin251095', 'chirag_25'))
     conn.commit()
     conn.close()
 
@@ -209,7 +209,7 @@ def user_login_page():
 
 def register_page():
     st.markdown("<div class='custom-card'>", unsafe_allow_html=True)
-    st.markdown("<h2>Naya Account Banayein</h2>", unsafe_allow_html=True)
+    st.markdown("<h2>Create New Account</h2>", unsafe_allow_html=True)
     with st.form("reg_form"):
         name = st.text_input("Full Name", placeholder="Aapka Pura Naam")
         gender = st.selectbox("Select Gender", ["Male", "Female", "Other"])
@@ -218,7 +218,7 @@ def register_page():
         st.write("")
         if st.form_submit_button("REGISTER NOW"):
             if not name or not dob or len(dob) != 8:
-                st.error("⚠️ Sahi details bharein! DOB 8 digits ki honi chahiye.")
+                st.error("⚠️ Please enter correct details! It should be 8 digits .")
             else:
                 try:
                     conn = sqlite3.connect("radha_counter_web.db")
@@ -272,7 +272,7 @@ def counter_page():
     df = pd.read_sql_query(f"SELECT session_date as Date, start_time as Start, end_time as End, total_count as Count FROM reports WHERE username='{st.session_state.current_user}' ORDER BY id DESC", conn)
     conn.close()
     if not df.empty: st.dataframe(df, use_container_width=True, hide_index=True)
-    else: st.info("Abhi tak koi session save nahi hua hai. Aaj se shuruaat karein!")
+    else: st.info("Still there is no session Let's start from today!")
     st.markdown("</div>", unsafe_allow_html=True)
 
 def admin_dashboard():
